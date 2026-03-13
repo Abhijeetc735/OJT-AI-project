@@ -32,8 +32,8 @@ import { processResumeNLP } from './utils/nlpEngine';
 import { useDropzone } from 'react-dropzone';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
-import { jsPDF } from 'jspdf';
-import 'jspdf-autotable';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 import { Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell, WidthType, AlignmentType } from 'docx';
 import { saveAs } from 'file-saver';
 import LandingPage from './components/LandingPage';
@@ -221,7 +221,7 @@ export default function App() {
       res.experience_level
     ]);
 
-    (doc as any).autoTable({
+    autoTable(doc, {
       startY: 35,
       head: [['Rank', 'Candidate Name', 'Score', 'Experience Level']],
       body: tableData,
@@ -229,7 +229,8 @@ export default function App() {
       headStyles: { fillColor: [5, 150, 105] }
     });
 
-    doc.save('candidate_rankings.pdf');
+    const pdfBlob = doc.output('blob');
+    saveAs(pdfBlob, 'candidate_rankings.pdf');
     setShowExportMenu(false);
   };
 
